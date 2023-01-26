@@ -1,0 +1,112 @@
+import turtle
+from random import randint
+import time
+
+
+######################## SESSION-1 ##########################
+player= turtle.Turtle()
+player.penup()
+player.shape("turtle")
+myscreen = turtle.Screen()
+
+#create target
+def createTarget():
+    target = turtle.Turtle()
+    target.speed(2)
+    target.penup()
+    target.shape("turtle")
+    target.color("green")
+    target.setpos(randint(-200,200), randint(-200,165))
+    target.seth(randint(0,360))
+    target.radius = 20
+    return target
+    
+    #create enemy   
+def createEnemy():    
+    enemy = turtle.Turtle()
+    enemy.shape("turtle")
+    enemy.penup()
+    enemy.color("red")
+    enemy.speed(3)
+    enemy.setpos(randint(-200,200), randint(-200,165))
+    enemy.seth(enemy.towards(player))
+    return enemy
+    
+    myscreen.tracer(0)
+target1 = createTarget()
+target2 = createTarget()
+target3 = createTarget()
+target4 = createTarget()
+target5 = createTarget()
+myscreen.tracer(1)
+
+enemy1 = createEnemy()
+enemy2 = createEnemy()\
+######################### SESSION-2 #########################
+
+# defines functions to make player turtle move and checks for position and intersections
+def go_left():
+    player.left(10)
+   
+def go_right():
+    player.right(10)
+    
+def go_forward():
+    player.forward(10)
+    
+    
+def go_backward():
+    player.backward(10)
+    
+# create onkey functions to move player  
+myscreen.onkey(go_left,'Left')
+myscreen.onkey(go_right,'Right')
+myscreen.onkey(go_forward,'Up')
+myscreen.onkey(go_backward,'Down')
+myscreen.listen()  
+# creates lists for targets, and enemies
+targets = [target1, target2, target3, target4, target5]
+enemies = [enemy1, enemy2]
+
+# define check intersection function to check if player and targets have intersected
+def check_intersection_targets():
+  for target in targets:
+    if target.distance(player) < 50:
+      target.hideturtle()
+      num = targets.index(target)
+      del targets[num]
+######################### SESSION-3 #########################
+writer = turtle.Turtle()
+writer.hideturtle()
+writer.shape("turtle")
+writer.penup()
+writer.goto(0,-25)
+
+def game_over():
+  for enemy in enemies:
+    enemy.hideturtle()
+  for target in targets:
+    target.hideturtle()
+  global running
+  running = False
+  writer.write("GAME OVER", None, "center",  "20pt bold")
+
+def check_intersection_enemies():
+  for enemy in enemies:
+    if enemy.distance(player) < 45:
+      game_over()
+global running
+running = True
+
+def gameon():
+  global running
+  if running == True:
+    for enemy in enemies:
+      enemy.forward(25)
+      enemy.seth(enemy.towards(player))
+      check_intersection_enemies()
+    for target in targets:
+      target.seth(randint(0,360))
+      target.forward(randint(50,60))
+      check_intersection_targets()
+    myscreen.ontimer(gameon,200)
